@@ -83,7 +83,7 @@ class Slider {
     }
 
     /** Moves the bat one step in its direction. */
-    method void move() {
+    method void Move() {
 	if (direction = 1) {
             let x = x - 4;
 	    if (x < 0) {
