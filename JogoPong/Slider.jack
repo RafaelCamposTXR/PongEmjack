@@ -36,21 +36,21 @@ class Slider {
     // desenha a raquete na tela
     method void mostrar() {
         do Screen.setColor(true);
-	    do desenhar();
+	do desenhar();
         return;
     }
 
     // limpa a raquete da tela
     method void limpar() {
         do Screen.setColor(false);
-	    do desenhar();
+	do desenhar();
         return;
     }
 
     // desenha a raquete na tela
     method void desenhar() {
-	    do Screen.drawRectangle(x, y, x + largura, y + altura);
-	    return;
+	do Screen.drawRectangle(x, y, x + largura, y + altura);
+	return;
     }
 
     // determina a direção da raquete
@@ -58,24 +58,24 @@ class Slider {
     // Para 1, esquerda
     // Para 2, direita
     method void setDirecao(int direcA) {
-	    let direcao = direcA;
+	let direcao = direcA;
         return;
     }
 
     // retorna a localização do ponto esquerda da raquete
-    method int getEsquerda() {
+    method int LadoEsquerdo() {
         return x;
     }
 
     // retorna a localização do ponto esquerda da raquete
-    method int getDireita() {
+    method int LadoDireito() {
         return x + largura;
     }
 
     // determina a largura da raquete
     method void setLargura(int largR) {
         do limpar();
-	    let largura = largR;
+	let largura = largR;
         do mostrar();
         return;
     }
