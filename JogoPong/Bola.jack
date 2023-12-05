@@ -1,233 +1,184 @@
 
-/**
- * A graphic ball. Has a screen location and distance of last destination.
- * Has methods for drawing, erasing and moving on the screen.
- * The ball's dimensions are 6X6 pixels.
- */
 class Bola{
 
-    // The ball's screen location (in pixels)
-    field int xBola, yBola;
+  field int xBola, yBola;
+  field int destinox, destinoy;  
+  field int d, retaD, diagonalD;
+  field boolean inverte, positivex, positivey;
+  field int ParedeEsquerda, ParedeDireita, ParedeCima, ParedeBaixo;
+  field int parede;
 
-    //Distância do último destino
-    field int destinox, destinoy;  
 
-    // Used for straight line movement computation
-    field int d, straightD, diagonalD;
-    field boolean inverte, positivex, positivey;
+  //Construtor da classe, chama a função show() originalmente, falta descobrir o porque
+  constructor Bola new(int x0, int y0, int ParedeEsquerda0, int ParedeDireita0, int ParedeCima0, int ParedeBaixo) {    	
+	  let x = x0;		
+	  let y = y0;
+	  let ParedeEsquerda = ParedeEsquerda0;
+	  let ParedeDireita = ParedeDireita0 - 6; // -6 for ball size
+	  let ParedeCima = ParedeCima0; 
+	  let ParedeBaixo = ParedeBaixo0 - 6; // -6 for ball size
+	  let parede = 0;
+    do Exibir();
+    return this;
+  }
+  //Fim do construtor de classe
 
-    // Localização das paredes
-    field int ParedeEsquerda, ParedeDireita, ParedeCima, ParedeBaixo;
 
-    // last parede that the ball was bounced from
-    field int parede;
+  //Funções de Desenho da bola na tela
+  method void LimpaMemoria(){
+    do Memory.deAlloc(this);
+    return;
+  }
+  method void Exibir(){
+    do Screen.setColor(true);
+    do draw();
+    return;
+  }
+  method void Esconder(){
+    do Screen.setColor(false);
+    do draw();
+    return;
+  }
+  method void ConstruirBola(){
+    do Screen.drawRectangle(x, y, x+5, y+5);
+    return;
+  }
+  method int LadoEsquerdo(){
+    return x;
+  }
+  method int LadoDireito(){
+    return x+5;
+  }
+  //Fim das funções envolvendo tela
 
-    /** Constructs a new Bola with a given initial location
-     *  and the locations of the walls. */
-    constructor Bola new(int x0, int y0, int ParedeEsquerda0, int ParedeDireita0, int ParedeCima0, int ParedeBaixo) {    	
-	let x = x0;		
-	let y = y0;
-	let ParedeEsquerda = ParedeEsquerda0;
-	let ParedeDireita = ParedeDireita0 - 6; // -6 for ball size
-	let ParedeCima = ParedeCima0; 
-	let ParedeBaixo = ParedeBaixo0 - 6; // -6 for ball size
-	let parede = 0;
-    	
-        do show();
 
-        return this;
+    method void Destino(int destx, int dest y){
+      var int dx, dy, temp;
+      let retax = destx - x;
+      let retay = desty - y;
+      let dx = Math.abs(retax);
+      let dy = Math.abs(retay);
+      let inverte = (dx < dy);
+      if(inverte){
+        let temp = dx;
+        let dx = dy;
+        let dy = temp;
+
+        let xpositivo = (y < desty);
+        let ypositivo = (x < destx);
+      }
+      else {
+        let xpositivo = (x < destx);
+        let ypositivo = (y < desty);
+      }
+
+      let d = (2 * dy) - dx;
+      let retaD = 2 * dy;
+      let diagonalD = 2 * (dy - dx);
+
+      return;
+   }
+
+  method int MoveBola(){
+    do Esconder();
+    if(d < 0){
+      let d = d + retaD;
     }
-
-    /** Deallocates the object's memory. */
-    method void dispose() {
-        do Memory.deAlloc(this);
-        return;
-    }
-
-    /** Draws the ball on the screen. */
-    method void show() {
-        do Screen.setColor(true);
-	do draw();
-        return;
-    }
-
-    /** Erases the ball from the screen. */
-    method void hide() {
-        do Screen.setColor(false);
-	do draw();
-        return;
-    }
-
-    /** Draws the ball. */
-    method void draw() {
-	do Screen.drawRectangle(x, y, x + 5, y + 5);
-	return;
-    }
-
-    /** Returns the left edge of the ball. */
-    method int getLeft() {
-        return x;
-    }
-
-    /** Returns the right edge of the ball. */
-    method int getRight() {
-        return x + 5;
-    }
-
-    /** Sets the destination of the ball. */
-    method void setDestination(int destinox, int destinoy) {
-        var int dx, dy, temp;
-
-	let lengthx = destinox - x;
-	let lengthy = destinoy - y;
-        let dx = Math.abs(lengthx);
-        let dy = Math.abs(lengthy);
-        let inverte = (dx < dy);
-
-        // scan should be on Y-axis
-        if (inverte) {
-            let temp = dx; // swap dx, dy
-            let dx = dy;
-            let dy = temp;
-
-   	    let positivex = (y < destinoy);
-            let positivey = (x < destinox);
+    else{
+      let d = d + diagonalD;
+      if (ypositivo){
+        if (inverte){
+          let x = x + 4;
         }
-        else {
-	    let positivex = (x < destinox);
-            let positivey = (y < destinoy);
+      }
+      else{
+        if (inverte){
+          let x = x - 4;
         }
-
-        let d = (2 * dy) - dx;
-        let straightD = 2 * dy;
-        let diagonalD = 2 * (dy - dx);
-
-	return;
+        else{
+          let y = y - 4;
+        }
+      }
     }
-
-    /**
-     * Moves the ball one unit towards its destination.
-     * Returns 0 if the ball has not reached a parede.
-     * If it did, returns a value according to the parede:
-     * 1-left parede, 2-right parede, 3-top parede, 4-bottom parede.
-     */
-    method int move() {
-
-	do hide();
-
-        if (d < 0) {
-            let d = d + straightD;
-        }
-        else {
-            let d = d + diagonalD;
-
-            if (positivey) {
-         	if (inverte) {
-	   	    let x = x + 4;
-    	        }
-                else {
-		    let y = y + 4;
-                }
-            }
-            else {
-         	if (inverte) {
-	   	    let x = x - 4;
-    	        }
-                else {
-		    let y = y - 4;
-                }
-            }
-	}
-
-        if (positivex) {
-      	    if (inverte) {
-	       let y = y + 4;
-    	    }
-            else {
-	        let x = x + 4;
-            }
-	}
-	else {
-            if (inverte) {
-	        let y = y - 4;
-	    }
-            else {
-		let x = x - 4;
-            }
-	}
-
-	if (~(x > ParedeEsquerda)) {
-	    let parede = 1;    
-	    let x = ParedeEsquerda;
-	}
-        if (~(x < ParedeDireita)) {
-	    let parede = 2;    
-	    let x = ParedeDireita;
-	}
-        if (~(y > ParedeCima)) {
-            let parede = 3;    
-	    let y = ParedeCima;
-        }
-        if (~(y < ParedeBaixo)) {
-            let parede = 4;    
-	    let y = ParedeBaixo;
-        }
-
-	do show();
-
-	return parede;
+    if(xpositivo){
+      if (inverte){
+        let y = y + 4;
+      }
+      else{
+        let x = x + 4;
+      }
     }
-
-    /**
-     * Bounces from the current parede: sets the new destination
-     * of the ball according to the ball's angle and the given
-     * bouncing direction (-1/0/1=left/center/right or up/center/down).
-     */
-    method void bounce(int bouncingDirection) {
-	var int newx, newy, divLengthx, divLengthy, factor;
-
-	// dividing by 10 first since results are too big
-        let divLengthx = lengthx / 10;
-        let divLengthy = lengthy / 10;
-	if (bouncingDirection = 0) {
-	    let factor = 10;
-	}
-	else {
-	    if ((~(lengthx < 0)) & (bouncingDirection = 1) | (lengthx < 0) & (bouncingDirection = (-1))) {
-	        let factor = 20; // bounce direction is in ball direction
-   	    }
-	    else {
-	        let factor = 5; // bounce direction is against ball direction
-	    }
-	}
-
-	if (parede = 1) {
-	    let newx = 506;
-	    let newy = (divLengthy * (-50)) / divLengthx;
-            let newy = y + (newy * factor);
-	}
-	else {
- 	    if (parede = 2) {
-	        let newx = 0;
-	        let newy = (divLengthy * 50) / divLengthx;
-                let newy = y + (newy * factor);
-	    }
-	    else {
- 	        if (parede = 3) {
-		    let newy = 250;
-		    let newx = (divLengthx * (-25)) / divLengthy;
-	            let newx = x + (newx * factor);
-		}
-	        else { // assumes parede = 4
-		    let newy = 0;
-		    let newx = (divLengthx * 25) / divLengthy;
-	            let newx = x + (newx * factor);
-		}
-	    }
-	}
-
-	do setDestination(newx, newy);
-
-	return;
+    else{
+      if inverte(){
+        let y = y - 4;
+      }
+      else{
+        let x = x - 4;
+      }
     }
+    if (~(x > ParedeEsquerda)){
+      let parede = 1;
+      let x = ParedeEsquerda;
+    }
+    if (~(x < ParedeDireita)){
+      let parede = 2;
+      let x = ParedeDireita;
+    }
+    if (~(y < ParedeCima)){
+      let parede = 3;
+      let y = ParedeCima;
+    }
+    if (~(y < ParedeBaixo)){
+      let parede = 4;
+      let y = ParedeBaixo;
+    }
+    do Exibir();
+    return parede;
+  }
+
+  method void RetornoBola(int DireçãoRetorno){
+    var int Novox, Novoy, divRetax, divRetay, fator;
+
+    let divRetax = retax / 10;
+    let divRetay = retay / 10;
+
+    if (DireçãoRetorno = 0){
+      let fator = 10;
+    }
+    else{
+      if ((~(retax < 0) & (DireçãoRetorno = 1)) | (retax < 0) & (DireçãoRetorno = (-1))) {
+        let fator = 20;
+      }
+      else{
+        let fator = 5;
+      }
+    }
+    if (parede = 1){
+      let Novox = 506;
+      let Novoy = (divRetay * (-50)) / divRetax;
+      let Novoy = y + (Novoy * fator);
+    }
+    else{
+      if (parede = 2){
+        let Novox = 0;
+        let Novoy= (divRetay * 50) / divRetax;
+        let Novoy= y + (Novoy * fator);
+      }
+      else{
+        if (parede = 3){
+          let Novoy = 250;
+          let Novox = (divRetax * (-25)) / divRetay;
+          let Novox = x + (Novox * fator);
+        }
+        else{
+          let Novoy = 0;
+          let Novox = (divRetax * 25) / divRetay;
+          let Novox = x + (NovoX * fator);
+        }
+      }
+    }
+    do Destino(Novox, Novo y);
+    return;
+  }
 }
+
