@@ -1,8 +1,8 @@
 
 class Bola{
 
-  field int x, y;
-  field int destinox, destinoy;  
+  field int xBola, yBola;
+  field int retax, retay;  
   field int d, retaD, diagonalD;
   field boolean inverte, positivex, positivey;
   field int ParedeEsquerda, ParedeDireita, ParedeCima, ParedeBaixo;
@@ -109,7 +109,7 @@ class Bola{
       }
     }
     else{
-      if inverte(){
+      if (inverte){
         let y = y - 4;
       }
       else{
@@ -173,11 +173,11 @@ class Bola{
         else{
           let Novoy = 0;
           let Novox = (divRetax * 25) / divRetay;
-          let Novox = x + (NovoX * fator);
+          let Novox = x + (Novox * fator);
         }
       }
     }
-    do Destino(Novox, Novo y);
+    do Destino(Novox, Novoy);
     return;
   }
 }
