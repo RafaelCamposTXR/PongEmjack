@@ -1,109 +1,119 @@
-// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/11/Pong/Slider.jack.
+// O jogo do Pong precisa de uma 'raquete' com configurações
+// de localização na tela, largura, altura, movimentação para
+// ambos lados, ...
 
-/**
- * A graphic Pong bat. Has a screen location, width and height.
- * Has methods for drawing, erasing, moving left and right on
- * the screen and changing the width. 
- */
 class Slider {
 
-    // The screen location
+    // define-se local na tela
     field int x, y;
 
-    // The width and height
-    field int width, height;
+    // largura e altura
+    field int largura, altura;
 
-    // The direction of the bat's movement
-    field int direction; // 1 = left, 2 = right
+    // a direção que a raquete irá é baseada em inteiros
+    // 1 para esquerda, 2 para direita
+    field int direcao;
 
-    /** Constructs a new bat with the given location and width. */
-    constructor Slider new(int Ax, int Ay, int Awidth, int Aheight) {
-	let x = Ax;
-	let y = Ay;
-	let width = Awidth;
-	let height = Aheight;
-	let direction = 2;
+    // Enfim, a raquete é construída abaixo, com as especificações dadas
+    constructor Slider new(int xR, int yR, int largR, int alturaR) {
+	let x = xR;
+	let y = yR;
+	let largura = largR;
+	let altura = alturaR;
+	let direcao = 2;
 
-        do show();
+        do mostrar();
 
         return this;
     }
 
-    /** Deallocates the object's memory. */
+    // desocupa o local de memória do objeto
     method void dispose() {
         do Memory.deAlloc(this);
         return;
     }
 
-    /** Draws the bat on the screen. */
-    method void show() {
+    // desenha a raquete na tela
+    method void mostrar() {
         do Screen.setColor(true);
-	do draw();
+	    do desenhar();
         return;
     }
 
-    /** Erases the bat from the screen. */
-    method void hide() {
+    // limpa a raquete da tela
+    method void limpar() {
         do Screen.setColor(false);
-	do draw();
+	    do desenhar();
         return;
     }
 
-    /** Draws the bat. */
-    method void draw() {
-	do Screen.drawRectangle(x, y, x + width, y + height);
-	return;
+    // desenha a raquete na tela
+    method void desenhar() {
+	    do Screen.drawRectangle(x, y, x + largura, y + altura);
+	    return;
     }
 
-    /** Sets the direction of the bat (0=stop, 1=left, 2=right). */
-    method void setDirection(int Adirection) {
-	let direction = Adirection;
+    // determina a direção da raquete
+    // Para 0, não se mexe
+    // Para 1, esquerda
+    // Para 2, direita
+    method void setDirecao(int direcA) {
+	    let direcao = direcA;
         return;
     }
 
-    /** Returns the left edge of the bat. */
-    method int getLeft() {
+    // retorna a localização do ponto esquerda da raquete
+    method int getEsquerda() {
         return x;
     }
 
-    /** Returns the right edge of the bat. */
-    method int getRight() {
-        return x + width;
+    // retorna a localização do ponto esquerda da raquete
+    method int getDireita() {
+        return x + largura;
     }
 
-    /** Sets the width. */
-    method void setWidth(int Awidth) {
-        do hide();
-	let width = Awidth;
-        do show();
+    // determina a largura da raquete
+    method void setLargura(int largR) {
+        do limpar();
+	    let largura = largR;
+        do mostrar();
         return;
     }
 
-    /** Moves the bat one step in its direction. */
+    // movimentação da raquete
     method void move() {
-	if (direction = 1) {
+
+        // esquerda
+	    if (direcao = 1) {
+
+            // a coordenada é levada à esquerda
             let x = x - 4;
-	    if (x < 0) {
-		let x = 0;
-    	    }
+
+            // a raquete não deve ultrapassar os limites da tela
+            if (x < 0) {
+                let x = 0;
+            }
             do Screen.setColor(false);
-            do Screen.drawRectangle((x + width) + 1, y, (x + width) + 4, y + height);
+            do Screen.drawRectangle((x + largura) + 1, y, (x + largura) + 4, y + altura);
             do Screen.setColor(true);
-   	    do Screen.drawRectangle(x, y, x + 3, y + height);
-	} 
-	else {
+            do Screen.drawRectangle(x, y, x + 3, y + altura);
+	    }
+
+        // direita
+        else {
+
+            // a coordenada é levada à direita
             let x = x + 4;
-	    if ((x + width) > 511) {
-		let x = 511 - width;
-  	    }
+
+            // a raquete não deve ultrapassar os limites da tela
+            if ((x + largura) > 511) {
+                let x = 511 - largura;
+            }
             do Screen.setColor(false);
-            do Screen.drawRectangle(x - 4, y, x - 1, y + height);
+            do Screen.drawRectangle(x - 4, y, x - 1, y + altura);
             do Screen.setColor(true);
-	    do Screen.drawRectangle((x + width) - 3, y, x + width, y + height);
-	}
+            do Screen.drawRectangle((x + largura) - 3, y, x + largura, y + altura);
+        }
 
         return;
     }
