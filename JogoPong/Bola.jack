@@ -1,7 +1,7 @@
 
 class Bola{
 
-  field int xBola, yBola;
+  field int x, y;
   field int retax, retay;  
   field int d, retaD, diagonalD;
   field boolean inverte, positivex, positivey;
