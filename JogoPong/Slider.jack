@@ -28,7 +28,7 @@ class Slider {
     }
 
     // desocupa o local de memória do objeto
-    method void dispose() {
+    method void LimpaMemoria() {
         do Memory.deAlloc(this);
         return;
     }
