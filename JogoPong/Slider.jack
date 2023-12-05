@@ -21,30 +21,28 @@ class Slider {
 	let largura = largR;
 	let altura = alturaR;
 	let direcao = 2;
-
-        do mostrar();
-
-        return this;
+  do mostrar();
+  return this;
     }
 
     // desocupa o local de memória do objeto
     method void LimpaMemoria() {
-        do Memory.deAlloc(this);
-        return;
+      do Memory.deAlloc(this);
+      return;
     }
 
     // desenha a raquete na tela
     method void mostrar() {
-        do Screen.setColor(true);
-	do desenhar();
-        return;
+      do Screen.setColor(true);
+	    do desenhar();
+      return;
     }
 
     // limpa a raquete da tela
     method void limpar() {
-        do Screen.setColor(false);
-	do desenhar();
-        return;
+      do Screen.setColor(false);
+	    do desenhar();
+      return;
     }
 
     // desenha a raquete na tela
@@ -74,10 +72,10 @@ class Slider {
 
     // determina a largura da raquete
     method void setLargura(int largR) {
-        do limpar();
-	let largura = largR;
-        do mostrar();
-        return;
+      do limpar();
+	    let largura = largR;
+      do mostrar();
+      return;
     }
 
     // movimentação da raquete
