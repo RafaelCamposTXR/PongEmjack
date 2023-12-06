@@ -1,4 +1,4 @@
-// O jogo do Pong precisa de uma 'raquete' com configurações
+// O jogo do Pong precisa de uma 'slider' com configurações
 // de localização na tela, largura, altura, movimentação para
 // ambos lados, ...
 
@@ -10,48 +10,50 @@ class Slider {
     // largura e altura
     field int largura, altura;
 
-    // a direção que a raquete irá é baseada em inteiros
+    // a direção que a slider irá é baseada em inteiros
     // 1 para esquerda, 2 para direita
     field int direcao;
 
-    // Enfim, a raquete é construída abaixo, com as especificações dadas
+    // Enfim, a slider é construída abaixo, com as especificações dadas
     constructor Slider new(int xR, int yR, int largR, int alturaR) {
 	let x = xR;
 	let y = yR;
 	let largura = largR;
 	let altura = alturaR;
 	let direcao = 2;
-  do mostrar();
-  return this;
+
+        do mostrar();
+
+        return this;
     }
 
     // desocupa o local de memória do objeto
     method void LimpaMemoria() {
-      do Memory.deAlloc(this);
-      return;
+        do Memory.deAlloc(this);
+        return;
     }
 
-    // desenha a raquete na tela
+    // desenha a slider na tela
     method void mostrar() {
-      do Screen.setColor(true);
-	    do desenhar();
-      return;
+        do Screen.setColor(true);
+	do desenhar();
+        return;
     }
 
-    // limpa a raquete da tela
+    // limpa a slider da tela
     method void limpar() {
-      do Screen.setColor(false);
-	    do desenhar();
-      return;
+        do Screen.setColor(false);
+	do desenhar();
+        return;
     }
 
-    // desenha a raquete na tela
+    // desenha a slider na tela
     method void desenhar() {
 	do Screen.drawRectangle(x, y, x + largura, y + altura);
 	return;
     }
 
-    // determina a direção da raquete
+    // determina a direção da slider
     // Para 0, não se mexe
     // Para 1, esquerda
     // Para 2, direita
@@ -60,25 +62,25 @@ class Slider {
         return;
     }
 
-    // retorna a localização do ponto esquerda da raquete
+    // retorna a localização do ponto esquerda da slider
     method int LadoEsquerdo() {
         return x;
     }
 
-    // retorna a localização do ponto esquerda da raquete
+    // retorna a localização do ponto esquerda da slider
     method int LadoDireito() {
         return x + largura;
     }
 
-    // determina a largura da raquete
+    // determina a largura da slider
     method void setLargura(int largR) {
-      do limpar();
-	    let largura = largR;
-      do mostrar();
-      return;
+        do limpar();
+	let largura = largR;
+        do mostrar();
+        return;
     }
 
-    // movimentação da raquete
+    // movimentação da slider
     method void move() {
 
         // esquerda
@@ -87,7 +89,7 @@ class Slider {
             // a coordenada é levada à esquerda
             let x = x - 4;
 
-            // a raquete não deve ultrapassar os limites da tela
+            // a slider não deve ultrapassar os limites da tela
             if (x < 0) {
                 let x = 0;
             }
@@ -103,7 +105,7 @@ class Slider {
             // a coordenada é levada à direita
             let x = x + 4;
 
-            // a raquete não deve ultrapassar os limites da tela
+            // a slider não deve ultrapassar os limites da tela
             if ((x + largura) > 511) {
                 let x = 511 - largura;
             }
