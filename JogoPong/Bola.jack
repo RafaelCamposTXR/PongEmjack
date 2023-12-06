@@ -4,13 +4,13 @@ class Bola{
   field int x, y;
   field int retax, retay;  
   field int d, retaD, diagonalD;
-  field boolean inverte, positivex, positivey;
+  field boolean inverte, xpositivo, ypositivo;
   field int ParedeEsquerda, ParedeDireita, ParedeCima, ParedeBaixo;
   field int parede;
 
 
   //Construtor da classe, chama a função show() originalmente, falta descobrir o porque
-  constructor Bola new(int x0, int y0, int ParedeEsquerda0, int ParedeDireita0, int ParedeCima0, int ParedeBaixo) {    	
+  constructor Bola new(int x0, int y0, int ParedeEsquerda0, int ParedeDireita0, int ParedeCima0, int ParedeBaixo0) {    	
 	  let x = x0;		
 	  let y = y0;
 	  let ParedeEsquerda = ParedeEsquerda0;
@@ -52,7 +52,7 @@ class Bola{
   //Fim das funções envolvendo tela
 
 
-    method void Destino(int destx, int dest y){
+    method void Destino(int destx, int desty){
       var int dx, dy, temp;
       let retax = destx - x;
       let retay = desty - y;
@@ -87,35 +87,23 @@ class Bola{
     else{
       let d = d + diagonalD;
       if (ypositivo){
-        if (inverte){
-          let x = x + 4;
-        }
+        if (inverte){let x = x + 4;}
+        else { let y = y - 4;}
       }
       else{
-        if (inverte){
-          let x = x - 4;
-        }
-        else{
-          let y = y - 4;
-        }
+        if (inverte){let x = x - 4;}
+        else{let y = y - 4;}
       }
     }
     if(xpositivo){
-      if (inverte){
-        let y = y + 4;
-      }
-      else{
-        let x = x + 4;
-      }
+      if (inverte){let y = y + 4;}
+      else{let x = x + 4;}
     }
     else{
-      if (inverte){
-        let y = y - 4;
-      }
-      else{
-        let x = x - 4;
-      }
+      if (inverte){let y = y - 4;}
+      else{let x = x - 4;}
     }
+
     if (~(x > ParedeEsquerda)){
       let parede = 1;
       let x = ParedeEsquerda;
@@ -124,7 +112,7 @@ class Bola{
       let parede = 2;
       let x = ParedeDireita;
     }
-    if (~(y < ParedeCima)){
+    if (~(y > ParedeCima)){
       let parede = 3;
       let y = ParedeCima;
     }
