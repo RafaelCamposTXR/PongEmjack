@@ -82,8 +82,9 @@ class Pong{
             while ((~(key = 0)) & (~Terminou)) {
                 let key = Keyboard.keyPressed();
                 do slider0.move();
-                do Move();
                 do Sys.wait(50);
+                do Move();
+                
             }
         }
 
