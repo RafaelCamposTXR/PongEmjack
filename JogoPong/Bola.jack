@@ -31,12 +31,12 @@ class Bola{
   }
   method void Exibir(){
     do Screen.setColor(true);
-    do draw();
+    do ConstruirBola();
     return;
   }
   method void Esconder(){
     do Screen.setColor(false);
-    do draw();
+    do ConstruirBola();
     return;
   }
   method void ConstruirBola(){
