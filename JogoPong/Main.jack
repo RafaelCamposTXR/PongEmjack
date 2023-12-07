@@ -3,8 +3,8 @@ class Main {
     var Pong game;
     do Pong.newInstance();
     let game = Pong.getInstance();
-    do game.PongLoop();
-	  do game.LimpaMemoria();
-    return;
+    do game.PongLoop();     // Executa o loop principal do jogo Pong
+    do game.LimpaMemoria(); // Limpa a memória alocada pelos objetos do jogo
+    return;  // Retorna ao sistema operacional
   }
 }
