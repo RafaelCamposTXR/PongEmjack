@@ -20,9 +20,9 @@ class Slider {
       let altura = alturaR;
       let direcao = 2;
 
-      do mostrar();
+      do mostrar();  // Exibe a slider na tela
 
-      return this;
+      return this;   // Retorna a instância da classe
     }
 
     // desocupa o local de memória do objeto
@@ -73,7 +73,7 @@ class Slider {
     // determina a largura da slider
     method void setLargura(int largR) {
       do limpar();
-	    let largura = largR;
+	    let largura = largR;   // Atualiza a largura da slider
       do mostrar();
       return;
     }
@@ -92,9 +92,11 @@ class Slider {
           let x = 0;
         }
 
+	// Limpa a área anterior da slider na tela
         do Screen.setColor(false);
         do Screen.drawRectangle((x + largura) + 1, y, (x + largura) + 4, y + altura);
-        
+
+        // Exibe a slider na nova posição na tela
         do Screen.setColor(true);
         do Screen.drawRectangle(x, y, x + 3, y + altura);
 	    }
@@ -109,8 +111,11 @@ class Slider {
             if ((x + largura) > 511) {
                 let x = 511 - largura;
             }
+	    // Limpa a área anterior da slider na tela
             do Screen.setColor(false);
             do Screen.drawRectangle(x - 4, y, x - 1, y + altura);
+
+	    // Exibe a slider na nova posição na tela
             do Screen.setColor(true);
             do Screen.drawRectangle((x + largura) - 3, y, x + largura, y + altura);
         }
