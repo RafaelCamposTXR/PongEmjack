@@ -1,68 +1,11 @@
-# VIRTUAL MACHINE
-
-# Elementos de Sistemas Computacionais 2022-2
-# Bruna Isabela de Oliveira
-# 12011ECP004
-# -----------------------------------------------
-
-# Analisa cada comando VM em seus elementos lexicais
-class Parser:
-    def __init__(self, filename):
-        if not filename.endswith(".vm"):
-            filename += ".vm"
-        with open(filename, "r") as f:
-            self.input = list(l.strip() for l in f.readlines() if not l.startswith("//"))
-        self.seek = 0
-        self.current_command = None
-
-    def hasMoreCommands(self):
-        return self.seek < len(self.input)
-
-    def advance(self):
-        self.current_command = self.input[self.seek]
-        self.seek += 1
-
-    def command_type(self):
-        head = self.current_command.split(" ")[0]
-        if head in [
-            "add",
-            "sub",
-            "neg",
-            "eq",
-            "gt",
-            "lt",
-            "and",
-            "or",
-            "not",
-        ]:
-            return "C_ARITHMETIC"
-        elif head in ["push", "pop"]:
-            return f"C_{head.upper()}"
-        else:
-            return f"C_{head.upper()}?"
-
-    def arg1(self):
-        ct = self.command_type()
-        if ct != "C_RETURN":
-            if ct == "C_ARITHMETIC":
-                return self.current_command.split(" ")[0]
-            return self.current_command.split(" ")[1]
-
-    def arg2(self):
-        ct = self.command_type()
-        if ct in ["C_PUSH", "C_POP", "C_FUNCTION", "C_CALL"]:
-            return int(self.current_command.split(" ")[2])
-
-
-# Escreve o código Assembly (.asm) que implementa o comando parsed
 class CodeWriter:
-    def __init__(self, output_file):
-        self.output_file = open(output_file, "w")
-        self.label_counter = 0
-        self.vm_filename = None
+    def __init__(self, saida):
+        self.saida = open(saida, "w")
+        self.contador = 0
+        self.vm_arquivo = None
 
-    def setFileName(self, filename):
-        self.vm_filename = filename
+    def setArquivo(self, arquivo):
+        self.vm_arquivo = arquivo
 
     def writeArithmetic(self, command):
         if command == "add":
@@ -196,129 +139,129 @@ class CodeWriter:
         self.writeDtoStack()
 
     def writeACommand(self, address):
-        self.output_file.write("@" + str(address) + "\n")
+        self.saida.write("@" + str(address) + "\n")
 
     def writeDCommand(self, dest):
-        self.output_file.write(dest + "=D\n")
+        self.saida.write(dest + "=D\n")
 
     def writeDtoM(self):
-        self.output_file.write("M=D\n")
+        self.saida.write("M=D\n")
 
     def writeR13ToM(self):
-        self.output_file.write("@R13\n")
-        self.output_file.write("M=D\n")
+        self.saida.write("@R13\n")
+        self.saida.write("M=D\n")
 
     def writeR13ToA(self):
-        self.output_file.write("@R13\n")
-        self.output_file.write("A=M\n")
+        self.saida.write("@R13\n")
+        self.saida.write("A=M\n")
 
     def decreaseStackPointer(self):
-        self.output_file.write("@SP\n")
-        self.output_file.write("M=M-1\n")
+        self.saida.write("@SP\n")
+        self.saida.write("M=M-1\n")
 
     def increaseStackPointer(self):
-        self.output_file.write("@SP\n")
-        self.output_file.write("M=M+1\n")
+        self.saida.write("@SP\n")
+        self.saida.write("M=M+1\n")
 
     def writePopToD(self):
-        self.output_file.write("@SP\n")
-        self.output_file.write("A=M\n")
-        self.output_file.write("D=M\n")
+        self.saida.write("@SP\n")
+        self.saida.write("A=M\n")
+        self.saida.write("D=M\n")
 
     def writePopToM(self):
-        self.output_file.write("@SP\n")
-        self.output_file.write("A=M\n")
-        self.output_file.write("M=M-1\n")
-        self.output_file.write("A=A+1\n")
-        self.output_file.write("A=M\n")
+        self.saida.write("@SP\n")
+        self.saida.write("A=M\n")
+        self.saida.write("M=M-1\n")
+        self.saida.write("A=A+1\n")
+        self.saida.write("A=M\n")
 
     def writeDtoStack(self):
-        self.output_file.write("@SP\n")
-        self.output_file.write("A=M\n")
-        self.output_file.write("M=D\n")
+        self.saida.write("@SP\n")
+        self.saida.write("A=M\n")
+        self.saida.write("M=D\n")
 
     def writeDOperation(self, operation):
-        self.output_file.write("D=D" + operation + "M\n")
+        self.saida.write("D=D" + operation + "M\n")
 
     def writeDUnaryOperation(self, operation):
-        self.output_file.write("D=" + operation + "D\n")
+        self.saida.write("D=" + operation + "D\n")
 
     def writeCompareDAndM(self, jump):
         label = self.getUniqueLabel()
-        self.output_file.write("@TRUE_" + label + "\n")
-        self.output_file.write("D;" + jump + "\n")
-        self.output_file.write("D=0\n")
-        self.output_file.write("@END_" + label + "\n")
-        self.output_file.write("0;JMP\n")
-        self.output_file.write("(TRUE_" + label + ")\n")
-        self.output_file.write("D=-1\n")
-        self.output_file.write("(END_" + label + ")\n")
+        self.saida.write("@TRUE_" + label + "\n")
+        self.saida.write("D;" + jump + "\n")
+        self.saida.write("D=0\n")
+        self.saida.write("@END_" + label + "\n")
+        self.saida.write("0;JMP\n")
+        self.saida.write("(TRUE_" + label + ")\n")
+        self.saida.write("D=-1\n")
+        self.saida.write("(END_" + label + ")\n")
 
     def writeSegmentAddress(self, segment, index):
-        self.output_file.write("@" + segment + "\n")
+        self.saida.write("@" + segment + "\n")
         if segment == "local":
-            self.output_file.write("D=M\n")
+            self.saida.write("D=M\n")
         elif segment == "argument":
-            self.output_file.write("D=M\n")
+            self.saida.write("D=M\n")
         elif segment == "this":
-            self.output_file.write("D=M\n")
+            self.saida.write("D=M\n")
         elif segment == "that":
-            self.output_file.write("D=M\n")
-        self.output_file.write("@" + str(index) + "\n")
-        self.output_file.write("D=D+A\n")
+            self.saida.write("D=M\n")
+        self.saida.write("@" + str(index) + "\n")
+        self.saida.write("D=D+A\n")
 
     def writeTempAddress(self, index):
-        self.output_file.write("@R5\n")
-        self.output_file.write("D=A\n")
-        self.output_file.write("@" + str(index) + "\n")
-        self.output_file.write("D=D+A\n")
+        self.saida.write("@R5\n")
+        self.saida.write("D=A\n")
+        self.saida.write("@" + str(index) + "\n")
+        self.saida.write("D=D+A\n")
 
     def writePointerAddress(self, index):
         if index == 0:
-            self.output_file.write("@THIS\n")
+            self.saida.write("@THIS\n")
         elif index == 1:
-            self.output_file.write("@THAT\n")
+            self.saida.write("@THAT\n")
 
     def writeStaticAddress(self, index):
-        self.output_file.write("@" + self.vm_filename + "." + str(index) + "\n")
+        self.saida.write("@" + self.vm_arquivo + "." + str(index) + "\n")
 
     def writePushLabel(self, label):
-        self.output_file.write("@" + label + "\n")
-        self.output_file.write("D=A\n")
-        self.output_file.write("@SP\n")
-        self.output_file.write("A=M\n")
-        self.output_file.write("M=D\n")
-        self.output_file.write("@SP\n")
-        self.output_file.write("M=M+1\n")
+        self.saida.write("@" + label + "\n")
+        self.saida.write("D=A\n")
+        self.saida.write("@SP\n")
+        self.saida.write("A=M\n")
+        self.saida.write("M=D\n")
+        self.saida.write("@SP\n")
+        self.saida.write("M=M+1\n")
 
     def writeSetARG(self, num_args):
-        self.output_file.write("@SP\n")
-        self.output_file.write("D=M\n")
-        self.output_file.write("@" + str(num_args) + "\n")
-        self.output_file.write("D=D-A\n")
-        self.output_file.write("@5\n")
-        self.output_file.write("D=D-A\n")
-        self.output_file.write("@ARG\n")
-        self.output_file.write("M=D\n")
+        self.saida.write("@SP\n")
+        self.saida.write("D=M\n")
+        self.saida.write("@" + str(num_args) + "\n")
+        self.saida.write("D=D-A\n")
+        self.saida.write("@5\n")
+        self.saida.write("D=D-A\n")
+        self.saida.write("@ARG\n")
+        self.saida.write("M=D\n")
 
     def writeSetLCL(self):
-        self.output_file.write("@SP\n")
-        self.output_file.write("D=M\n")
-        self.output_file.write("@LCL\n")
-        self.output_file.write("M=D\n")
+        self.saida.write("@SP\n")
+        self.saida.write("D=M\n")
+        self.saida.write("@LCL\n")
+        self.saida.write("M=D\n")
 
     def writeGotoLabel(self, label):
-        self.output_file.write("@" + label + "\n")
-        self.output_file.write("0;JMP\n")
+        self.saida.write("@" + label + "\n")
+        self.saida.write("0;JMP\n")
 
     def writeIfGotoLabel(self, label):
         self.decreaseStackPointer()
         self.writePopToD()
-        self.output_file.write("@" + label + "\n")
-        self.output_file.write("D;JNE\n")
+        self.saida.write("@" + label + "\n")
+        self.saida.write("D;JNE\n")
 
     def writeFunction(self, function_name, num_locals):
-        self.output_file.write("(" + function_name + ")\n")
+        self.saida.write("(" + function_name + ")\n")
         for _ in range(num_locals):
             self.writePushConstant(0)
 
@@ -338,7 +281,7 @@ class CodeWriter:
 
         self.writeGotoLabel(function_name)
 
-        self.output_file.write("(RETURN_" + return_label + ")\n")
+        self.saida.write("(RETURN_" + return_label + ")\n")
 
     def writeReturn(self):
         self.writeFrameToR13()  
@@ -353,73 +296,118 @@ class CodeWriter:
         self.writeGotoA()
 
     def writeFrameToR13(self):
-        self.output_file.write("@LCL\n")
-        self.output_file.write("D=M\n")
-        self.output_file.write("@R13\n")
-        self.output_file.write("M=D\n")
+        self.saida.write("@LCL\n")
+        self.saida.write("D=M\n")
+        self.saida.write("@R13\n")
+        self.saida.write("M=D\n")
 
     def writeReturnAddressToR14(self):
-        self.output_file.write("@5\n")
-        self.output_file.write("A=D-A\n")
-        self.output_file.write("D=M\n")
-        self.output_file.write("@R14\n")
-        self.output_file.write("M=D\n")
+        self.saida.write("@5\n")
+        self.saida.write("A=D-A\n")
+        self.saida.write("D=M\n")
+        self.saida.write("@R14\n")
+        self.saida.write("M=D\n")
 
     def writeReturnValueToARG(self):
         self.decreaseStackPointer()
         self.writePopToD()
-        self.output_file.write("@ARG\n")
-        self.output_file.write("A=M\n")
-        self.output_file.write("M=D\n")
+        self.saida.write("@ARG\n")
+        self.saida.write("A=M\n")
+        self.saida.write("M=D\n")
 
     def writeSPToARG(self):
-        self.output_file.write("@ARG\n")
-        self.output_file.write("D=M+1\n")
-        self.output_file.write("@SP\n")
-        self.output_file.write("M=D\n")
+        self.saida.write("@ARG\n")
+        self.saida.write("D=M+1\n")
+        self.saida.write("@SP\n")
+        self.saida.write("M=D\n")
 
     def writeRestoreThat(self):
-        self.output_file.write("@R13\n")
-        self.output_file.write("AM=M-1\n")
-        self.output_file.write("D=M\n")
-        self.output_file.write("@THAT\n")
-        self.output_file.write("M=D\n")
+        self.saida.write("@R13\n")
+        self.saida.write("AM=M-1\n")
+        self.saida.write("D=M\n")
+        self.saida.write("@THAT\n")
+        self.saida.write("M=D\n")
 
     def writeRestoreThis(self):
-        self.output_file.write("@R13\n")
-        self.output_file.write("AM=M-1\n")
-        self.output_file.write("D=M\n")
-        self.output_file.write("@THIS\n")
-        self.output_file.write("M=D\n")
+        self.saida.write("@R13\n")
+        self.saida.write("AM=M-1\n")
+        self.saida.write("D=M\n")
+        self.saida.write("@THIS\n")
+        self.saida.write("M=D\n")
 
     def writeRestoreArgument(self):
-        self.output_file.write("@R13\n")
-        self.output_file.write("AM=M-1\n")
-        self.output_file.write("D=M\n")
-        self.output_file.write("@ARG\n")
-        self.output_file.write("M=D\n")
+        self.saida.write("@R13\n")
+        self.saida.write("AM=M-1\n")
+        self.saida.write("D=M\n")
+        self.saida.write("@ARG\n")
+        self.saida.write("M=D\n")
 
     def writeRestoreLocal(self):
-        self.output_file.write("@R13\n")
-        self.output_file.write("AM=M-1\n")
-        self.output_file.write("D=M\n")
-        self.output_file.write("@LCL\n")
-        self.output_file.write("M=D\n")
+        self.saida.write("@R13\n")
+        self.saida.write("AM=M-1\n")
+        self.saida.write("D=M\n")
+        self.saida.write("@LCL\n")
+        self.saida.write("M=D\n")
 
     def writeReturnAddressToA(self):
-        self.output_file.write("@R14\n")
-        self.output_file.write("A=M\n")
+        self.saida.write("@R14\n")
+        self.saida.write("A=M\n")
 
     def writeGotoA(self):
-        self.output_file.write("0;JMP\n")
+        self.saida.write("0;JMP\n")
 
+class Parser:
+    def __init__(self, arquivo):
+        if not arquivo.endswith(".vm"):
+            arquivo += ".vm"
+        with open(arquivo, "r") as f:
+            self.input = list(l.strip() for l in f.readlines() if not l.startswith("//"))
+        self.seek = 0
+        self.current_command = None
 
-## Conduz o processo
+    def hasMoreCommands(self):
+        return self.seek < len(self.input)
+
+    def advance(self):
+        self.current_command = self.input[self.seek]
+        self.seek += 1
+
+    def command_type(self):
+        head = self.current_command.split(" ")[0]
+        if head in [
+            "add",
+            "sub",
+            "neg",
+            "eq",
+            "gt",
+            "lt",
+            "and",
+            "or",
+            "not",
+        ]:
+            return "C_ARITHMETIC"
+        elif head in ["push", "pop"]:
+            return f"C_{head.upper()}"
+        else:
+            return f"C_{head.upper()}?"
+
+    def arg1(self):
+        ct = self.command_type()
+        if ct != "C_RETURN":
+            if ct == "C_ARITHMETIC":
+                return self.current_command.split(" ")[0]
+            return self.current_command.split(" ")[1]
+
+    def arg2(self):
+        ct = self.command_type()
+        if ct in ["C_PUSH", "C_POP", "C_FUNCTION", "C_CALL"]:
+            return int(self.current_command.split(" ")[2])
+
 class Main:
-    def __init__(self, filename):
-        self.parser = Parser(filename)
-        self.code_writer = CodeWriter(filename[:-3] + ".asm") 
-        self.code_writer.setFileName(filename[:-3])
+    def __init__(self, arquivo):
+        self.parser = Parser(arquivo)
+        self.code_writer = CodeWriter(arquivo[:-3] + ".asm") 
+        self.code_writer.setArquivo(arquivo[:-3])
 
     def translate(self):
         while self.parser.hasMoreCommands():
@@ -434,12 +422,13 @@ class Main:
                 self.code_writer.writePushPop(command_type[2:].lower(), segment, index)
 
     def close(self):
-        self.code_writer.output_file.close()
-
-
+        self.code_writer.saida.close()
 
 if __name__ == '__main__':
-    filename = input("Entre com seu arquivo VM: ")
-    vm_translator = Main(filename)
+    print("------------------    VM Translator    -----------------\n")
+    print("Este código converterá o arquivo .vm dado para linguagem\nde máquina .asm. Insira abaixo o nome de seu arquivo.\n")
+    arquivo = input("Nome/do/arquivo.vm: ")
+    vm_translator = Main(arquivo)
     vm_translator.translate()
     vm_translator.close()
+    print("\n\t\t\t   Convertido com sucesso!")
