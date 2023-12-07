@@ -1,12 +1,12 @@
 
 class Bola{
 
-  field int x, y;
-  field int retax, retay;  
-  field int d, retaD, diagonalD;
-  field boolean inverte, xpositivo, ypositivo;
-  field int ParedeEsquerda, ParedeDireita, ParedeCima, ParedeBaixo;
-  field int parede;
+  field int x, y;         	 // Posição da bola
+  field int retax, retay; 	 // Distância até o destino (coordenadas x e y)
+  field int d, retaD, diagonalD; // Variáveis para cálculos de movimento
+  field boolean inverte, xpositivo, ypositivo; 			     // Flags para controle de movimento
+  field int ParedeEsquerda, ParedeDireita, ParedeCima, ParedeBaixo;  // Limites da tela
+  field int parede; // Indica qual parede foi atingida
 
   constructor Bola new(int x0, int y0, int ParedeEsquerda0, int ParedeDireita0, int ParedeCima0, int ParedeBaixo0) {    	
 	  let x = x0;		
@@ -16,8 +16,8 @@ class Bola{
 	  let ParedeCima = ParedeCima0; 
 	  let ParedeBaixo = ParedeBaixo0 - 6; // -6 para o tamanho da bola
 	  let parede = 0;
-    do Exibir();
-    return this;
+    	  do Exibir();
+     	  return this;
   }
   //Fim do construtor de classe
 
@@ -38,14 +38,14 @@ class Bola{
     return;
   }
   method void ConstruirBola(){
-    do Screen.drawRectangle(x, y, x+5, y+5);
+    do Screen.drawRectangle(x, y, x+5, y+5); // Desenha a bola na tela
     return;
   }
   method int LadoEsquerdo(){
-    return x;
+    return x; // Retorna a posição do lado esquerdo da bola
   }
   method int LadoDireito(){
-    return x+5;
+    return x+5; // Retorna a posição do lado direito da bola
   }
   //Fim das funções envolvendo tela
 
@@ -76,7 +76,7 @@ class Bola{
   }
 
   method int MoveBola(){
-    do Esconder();
+    do Esconder();  // Esconde a bola antes de movê-la
     if(d < 0){
       let d = d + retaD;
     }
@@ -100,26 +100,28 @@ class Bola{
       else{let x = x - 4;}
     }
 
+    // Verifica se a bola atingiu alguma parede
     if (~(x > ParedeEsquerda)){
-      let parede = 1;
-      let x = ParedeEsquerda;
+      let parede = 1;          // Indica que a bola atingiu a parede esquerda
+      let x = ParedeEsquerda;  // Reposiciona a bola para a parede esquerda
     }
     if (~(x < ParedeDireita)){
-      let parede = 2;
-      let x = ParedeDireita;
+      let parede = 2;         // Indica que a bola atingiu a parede direita
+      let x = ParedeDireita;  // Reposiciona a bola para a parede direita
     }
-    if (~(y > ParedeCima)){
-      let parede = 3;
-      let y = ParedeCima;
+    if (~(y > ParedeCima)){ 
+      let parede = 3;     // Indica que a bola atingiu a parede superior
+      let y = ParedeCima; // Reposiciona a bola para a parede superior
     }
     if (~(y < ParedeBaixo)){
-      let parede = 4;
-      let y = ParedeBaixo;
+      let parede = 4;      // Indica que a bola atingiu a parede inferior
+      let y = ParedeBaixo; / Reposiciona a bola para a parede inferior
     }
-    do Exibir();
-    return parede;
+    do Exibir();   // Exibe a bola após o movimento
+    return parede; // Retorna qual parede foi atingida
   }
 
+  // Método para retornar a bola após atingir uma parede
   method void RetornoBola(int DireçãoRetorno){
     var int Novox, Novoy, divRetax, divRetay, fator;
 
@@ -127,16 +129,18 @@ class Bola{
     let divRetay = retay / 10;
 
     if (DireçãoRetorno = 0){
-      let fator = 10;
+      let fator = 10;  // Fator de retorno padrão
     }
     else{
       if ((~(retax < 0) & (DireçãoRetorno = 1)) | (retax < 0) & (DireçãoRetorno = (-1))) {
-        let fator = 20;
+        let fator = 20;  // Fator de retorno dobrado se movendo para a esquerda
       }
       else{
-        let fator = 5;
+        let fator = 5;   // Fator de retorno reduzido se movendo para a direita
       }
     }
+
+    // Calcula a nova posição da bola com base na parede atingida
     if (parede = 1){
       let Novox = 506;
       let Novoy = (divRetay * (-50)) / divRetax;
@@ -161,7 +165,7 @@ class Bola{
         }
       }
     }
-    do Destino(Novox, Novoy);
+    do Destino(Novox, Novoy); // Define o novo destino da bola
     return;
   }
 }
