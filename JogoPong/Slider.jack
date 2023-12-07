@@ -1,6 +1,4 @@
-// O jogo do Pong precisa de uma 'slider' com configurações
-// de localização na tela, largura, altura, movimentação para
-// ambos lados, ...
+// 'Slider' é a barrinha que vai tentar evitar que a bola acerte o chao
 
 class Slider {
 
