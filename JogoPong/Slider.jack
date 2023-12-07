@@ -16,41 +16,41 @@ class Slider {
 
     // Enfim, a slider é construída abaixo, com as especificações dadas
     constructor Slider new(int xR, int yR, int largR, int alturaR) {
-	let x = xR;
-	let y = yR;
-	let largura = largR;
-	let altura = alturaR;
-	let direcao = 2;
+      let x = xR;
+      let y = yR;
+      let largura = largR;
+      let altura = alturaR;
+      let direcao = 2;
 
-        do mostrar();
+      do mostrar();
 
-        return this;
+      return this;
     }
 
     // desocupa o local de memória do objeto
     method void LimpaMemoria() {
-        do Memory.deAlloc(this);
-        return;
+      do Memory.deAlloc(this);
+      return;
     }
 
     // desenha a slider na tela
     method void mostrar() {
-        do Screen.setColor(true);
-	do desenhar();
-        return;
+      do Screen.setColor(true);
+	    do desenhar();
+      return;
     }
 
     // limpa a slider da tela
     method void limpar() {
-        do Screen.setColor(false);
-	do desenhar();
-        return;
+      do Screen.setColor(false);
+	    do desenhar();
+      return;
     }
 
     // desenha a slider na tela
     method void desenhar() {
-	do Screen.drawRectangle(x, y, x + largura, y + altura);
-	return;
+	    do Screen.drawRectangle(x, y, x + largura, y + altura);
+	    return;
     }
 
     // determina a direção da slider
@@ -58,11 +58,11 @@ class Slider {
     // Para 1, esquerda
     // Para 2, direita
     method void setDirecao(int direcA) {
-	let direcao = direcA;
-        return;
+	    let direcao = direcA;
+      return;
     }
 
-    // retorna a localização do ponto esquerda da slider
+    // retorna a localização do ponto esquerdo da slider
     method int LadoEsquerdo() {
         return x;
     }
@@ -74,29 +74,31 @@ class Slider {
 
     // determina a largura da slider
     method void setLargura(int largR) {
-        do limpar();
-	let largura = largR;
-        do mostrar();
-        return;
+      do limpar();
+	    let largura = largR;
+      do mostrar();
+      return;
     }
 
     // movimentação da slider
     method void move() {
 
-        // esquerda
+      // esquerda
 	    if (direcao = 1) {
 
-            // a coordenada é levada à esquerda
-            let x = x - 4;
+        // a coordenada é levada à esquerda
+        let x = x - 4;
 
-            // a slider não deve ultrapassar os limites da tela
-            if (x < 0) {
-                let x = 0;
-            }
-            do Screen.setColor(false);
-            do Screen.drawRectangle((x + largura) + 1, y, (x + largura) + 4, y + altura);
-            do Screen.setColor(true);
-            do Screen.drawRectangle(x, y, x + 3, y + altura);
+        // a slider não deve ultrapassar os limites da tela
+        if (x < 0) {
+          let x = 0;
+        }
+
+        do Screen.setColor(false);
+        do Screen.drawRectangle((x + largura) + 1, y, (x + largura) + 4, y + altura);
+        
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x, y, x + 3, y + altura);
 	    }
 
         // direita
