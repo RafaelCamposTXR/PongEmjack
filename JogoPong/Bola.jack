@@ -12,9 +12,9 @@ class Bola{
 	  let x = x0;		
 	  let y = y0;
 	  let ParedeEsquerda = ParedeEsquerda0;
-	  let ParedeDireita = ParedeDireita0 - 6; // -6 for ball size
+	  let ParedeDireita = ParedeDireita0 - 6; // -6 para o tamanho da bola
 	  let ParedeCima = ParedeCima0; 
-	  let ParedeBaixo = ParedeBaixo0 - 6; // -6 for ball size
+	  let ParedeBaixo = ParedeBaixo0 - 6; // -6 para o tamanho da bola
 	  let parede = 0;
     do Exibir();
     return this;
