@@ -8,8 +8,6 @@ class Bola{
   field int ParedeEsquerda, ParedeDireita, ParedeCima, ParedeBaixo;
   field int parede;
 
-
-  //Construtor da classe, chama a função show() originalmente, falta descobrir o porque
   constructor Bola new(int x0, int y0, int ParedeEsquerda0, int ParedeDireita0, int ParedeCima0, int ParedeBaixo0) {    	
 	  let x = x0;		
 	  let y = y0;
@@ -51,33 +49,31 @@ class Bola{
   }
   //Fim das funções envolvendo tela
 
+  //Determina a posição final da bola com base na posição atual
+  method void Destino(int destx, int desty){
+    var int dx, dy, temp;
+    let retax = destx - x;
+    let retay = desty - y;
+    let dx = Math.abs(retax);
+    let dy = Math.abs(retay);
+    let inverte = (dx < dy);
+    if(inverte){
+      let temp = dx;
+      let dx = dy;
+      let dy = temp;
+      let xpositivo = (y < desty);
+      let ypositivo = (x < destx);
+    }
+    else {
+      let xpositivo = (x < destx);
+      let ypositivo = (y < desty);
+    }
+    let d = (2 * dy) - dx;
+    let retaD = 2 * dy;
+    let diagonalD = 2 * (dy - dx);
 
-    method void Destino(int destx, int desty){
-      var int dx, dy, temp;
-      let retax = destx - x;
-      let retay = desty - y;
-      let dx = Math.abs(retax);
-      let dy = Math.abs(retay);
-      let inverte = (dx < dy);
-      if(inverte){
-        let temp = dx;
-        let dx = dy;
-        let dy = temp;
-
-        let xpositivo = (y < desty);
-        let ypositivo = (x < destx);
-      }
-      else {
-        let xpositivo = (x < destx);
-        let ypositivo = (y < desty);
-      }
-
-      let d = (2 * dy) - dx;
-      let retaD = 2 * dy;
-      let diagonalD = 2 * (dy - dx);
-
-      return;
-   }
+    return;
+  }
 
   method int MoveBola(){
     do Esconder();
